@@ -10,8 +10,13 @@ int main() {
 	sfRenderWindow* window = sfRenderWindow_create((sfVideoMode){(sfVector2u){W, H}, (unsigned int)8}, (const char*)"window", (uint32_t)0, (sfWindowState)0, &(const sfContextSettings){24,8,16,4,6,1,1});
 	sfRenderWindow_setPosition(window, (sfVector2i){300, 300});
 
-	sfTexture* texture = sfTexture_create((sfVectur2u){30,30};
-	sfShader* shader = 
+	sfTexture* texture = sfTexture_create((sfVector2u){30,30});
+
+sfCircleShape* circle = sfCircleShape_create();
+
+
+
+sfShader* shader = sfShader_createFromFile((const char*)NULL, (const char*)NULL, (const char*)NULL);
 
 	int eventbool = 0;
 	while (sfRenderWindow_isOpen(window)) {
@@ -31,7 +36,7 @@ int main() {
 
 		sfRenderWindow_clear(window, (sfColor){33, 233, 33, 11});
 
-		sfRenderWindow_drawCircleShape(window, circle, (sfRenderStates){ (sfBlendMode){0,0,0,0,0,0}, (sfStencilMode){7,0,{0},{1},{0}}, (sfTransform){{0,1,2,3,4,5,6,7,8}}, (sfCoordinateType)0, texture, shader); 
+		sfRenderWindow_drawCircleShape(window, circle, (sfRenderStates){ (sfBlendMode){0,0,0,0,0,0}, (sfStencilMode){7,0,{0},{1},{0}}, (sfTransform){{0,1,2,3,4,5,6,7,8}}, (sfCoordinateType)0, texture, shader}); 
 
 		sfRenderWindow_display(window);
 	}
