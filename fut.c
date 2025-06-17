@@ -29,8 +29,20 @@ int main(void)
 					case (sfKeyEscape):
 						sfRenderWindow_close(window);
 						break;
+					case (sfKeyLControl && sfKeyC):
+						sfRenderWindow_close(window);
+						break;
 					case (sfKeyH):
 						sfCircleShape_move(circle, (sfVector2f){-10.0, 0.0});
+						break;
+					case (sfKeyJ):
+						sfCircleShape_move(circle, (sfVector2f){0.0, 10.0});
+						break;
+					case (sfKeyK):
+						sfCircleShape_move(circle, (sfVector2f){0.0, -10.0});
+						break;
+					case (sfKeyL):
+						sfCircleShape_move(circle, (sfVector2f){10.0, 0.0});
 						break;
 					default:
 						break;
