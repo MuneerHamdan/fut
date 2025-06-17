@@ -1,25 +1,47 @@
 #include <CSFML/Graphics.h>
 #include <stdlib.h>
+#include <stdio.h>
 
-#define GRAY (sfColor){33, 33, 33, 255}
-#define GREEN (sfColor){33, 211, 177, 255}
+#define GRAY (sfColor){77, 77, 77, 255}
+#define GREEN (sfColor){55, 255, 155, 255}
 
 #define N 11
 
+
+void initcircles(const unsigned int W, const unsigned int H, sfCircleShape** circles) {
+	float RADIUS = (W / N) / N;
+	for (int i = 0; i < N; i++) {
+		circles[i] = sfCircleShape_create();
+		sfCircleShape_setPosition(circles[i], (sfVector2f){(i * (W / N)), (i * (H / N))});
+		sfCircleShape_setFillColor(circles[i], GREEN);
+		sfCircleShape_setRadius(circles[i], RADIUS);
+	}
+}
+
 int main()
 {
-	sfRenderWindow*   window = sfRenderWindow_create((const sfVideoMode){{800, 600}, 32}, "SFML window", sfResize | sfClose, sfWindowed, NULL);
+	sfVideoMode desk = sfVideoMode_getDesktopMode();
+	const unsigned int deskx = desk.size.x;
+	const unsigned int desky = desk.size.y;
+
+
+	const unsigned int W = deskx / 2;
+	const unsigned int H = desky / 2;
+
+	sfRenderWindow* window = sfRenderWindow_create(
+			(const sfVideoMode){{W, H}, 32},
+			"SFML window",
+			sfNone,
+			sfWindowed,
+			NULL
+			);
 	if (!window)
 		return EXIT_FAILURE;
+	sfRenderWindow_setPosition(window, (sfVector2i){(deskx / 2) - (W / 2), (desky / 2) - (H / 2)});
 
 	sfCircleShape** circles = (sfCircleShape **)malloc(N * sizeof(sfCircleShape *));
 
-	for (int i = 0; i < N; i++) {
-		circles[i] = sfCircleShape_create();
-		sfCircleShape_setPosition(circles[i], (sfVector2f){i * 20, i * 20});
-		sfCircleShape_setFillColor(circles[i], GREEN);
-		sfCircleShape_setRadius(circles[i], 20.0);
-	}
+	initcircles(W, H, circles);
 
 
 	sfEvent event;
@@ -63,6 +85,8 @@ int main()
 		sfRenderWindow_display(window);
 	}
 
+
+	//done
 	for (int i = 0; i < N; i++)
 		sfCircleShape_destroy(circles[i]);
 
