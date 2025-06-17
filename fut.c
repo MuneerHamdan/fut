@@ -1,20 +1,25 @@
 #include <CSFML/Graphics.h>
 #include <stdlib.h>
 
-#define GRAY (sfColor){18, 18, 18, 255}
+#define GRAY (sfColor){33, 33, 33, 255}
 #define GREEN (sfColor){33, 211, 177, 255}
 
-int main(void)
+#define N 11
+
+int main()
 {
 	sfRenderWindow*   window = sfRenderWindow_create((const sfVideoMode){{800, 600}, 32}, "SFML window", sfResize | sfClose, sfWindowed, NULL);
 	if (!window)
 		return EXIT_FAILURE;
 
+	sfCircleShape** circles = (sfCircleShape **)malloc(N * sizeof(sfCircleShape *));
 
-	sfCircleShape* circle = sfCircleShape_create();
-	sfCircleShape_setPosition(circle, (sfVector2f){200, 200});
-	sfCircleShape_setFillColor(circle, GREEN);
-	sfCircleShape_setRadius(circle, 20.0);
+	for (int i = 0; i < N; i++) {
+		circles[i] = sfCircleShape_create();
+		sfCircleShape_setPosition(circles[i], (sfVector2f){i * 20, i * 20});
+		sfCircleShape_setFillColor(circles[i], GREEN);
+		sfCircleShape_setRadius(circles[i], 20.0);
+	}
 
 
 	sfEvent event;
@@ -33,16 +38,16 @@ int main(void)
 						sfRenderWindow_close(window);
 						break;
 					case (sfKeyH):
-						sfCircleShape_move(circle, (sfVector2f){-10.0, 0.0});
+						sfCircleShape_move(circles[0], (sfVector2f){-10.0, 0.0});
 						break;
 					case (sfKeyJ):
-						sfCircleShape_move(circle, (sfVector2f){0.0, 10.0});
+						sfCircleShape_move(circles[0], (sfVector2f){0.0, 10.0});
 						break;
 					case (sfKeyK):
-						sfCircleShape_move(circle, (sfVector2f){0.0, -10.0});
+						sfCircleShape_move(circles[0], (sfVector2f){0.0, -10.0});
 						break;
 					case (sfKeyL):
-						sfCircleShape_move(circle, (sfVector2f){10.0, 0.0});
+						sfCircleShape_move(circles[0], (sfVector2f){10.0, 0.0});
 						break;
 					default:
 						break;
@@ -52,13 +57,17 @@ int main(void)
 
 		sfRenderWindow_clear(window, GRAY);
 
-		sfRenderWindow_drawCircleShape(window, circle, NULL);
+		for (int i = 0; i < N; i++)
+			sfRenderWindow_drawCircleShape(window, circles[i], NULL);
 
 		sfRenderWindow_display(window);
 	}
 
-	sfCircleShape_destroy(circle);
+	for (int i = 0; i < N; i++)
+		sfCircleShape_destroy(circles[i]);
+
 	sfRenderWindow_destroy(window);
+	free(circles);
 
 	return EXIT_SUCCESS;
 }
