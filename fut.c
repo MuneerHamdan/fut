@@ -56,12 +56,30 @@ void movecircle(Circle* a, int W, int H) {
 			a->sy = 0.000000;
 	}
 
-	if (sfCircleShape_getPosition(a->circle).x + a->radius > W)
+	if (sfCircleShape_getPosition(a->circle).x + a->radius > W) {
 			sfCircleShape_setPosition(a->circle, (sfVector2f){W - a->radius, sfCircleShape_getPosition(a->circle).y});
-	else if (sfCircleShape_getPosition(a->circle).x - a->radius < W)
-			sfCircleShape_setPosition(a->circle, (sfVector2f){W - W + a->radius, sfCircleShape_getPosition(a->circle).y});
+//			a->sx = 0.0;
+			a->sx = -1.0 * a->sx;
+	}
+	else if (sfCircleShape_getPosition(a->circle).x - a->radius < 0.0) {
+			sfCircleShape_setPosition(a->circle, (sfVector2f){a->radius, sfCircleShape_getPosition(a->circle).y});
+			//a->sx = 0.0;
+			a->sx = -1.0 * a->sx;
+	}
 
-	printf("posx: %f, y: %f\n", sfCircleShape_getPosition(a->circle).x + a->radius, sfCircleShape_getPosition(a->circle).y);
+	if (sfCircleShape_getPosition(a->circle).y + a->radius > H) {
+			sfCircleShape_setPosition(a->circle, (sfVector2f){sfCircleShape_getPosition(a->circle).x, H - a->radius});
+		//	a->sy = 0.0;
+			a->sy = -1.0 * a->sy;
+	}
+	else if (sfCircleShape_getPosition(a->circle).y - a->radius < 0.0) {
+			sfCircleShape_setPosition(a->circle, (sfVector2f){sfCircleShape_getPosition(a->circle).x, a->radius});
+		//	a->sy = 0.0;
+			a->sy = -1.0 * a->sy;
+	}
+
+
+	printf("POS: (%f, %f)\tSPEED: (%f, %f)\n", sfCircleShape_getPosition(a->circle).x + a->radius, sfCircleShape_getPosition(a->circle).y, a->sx, a->sy);
 
 }
 
@@ -72,15 +90,21 @@ void movetowards(Circle* a, Circle* b) {
 		if (!sfFloatRect_intersects(&aBounds, &bBounds, NULL)) {
 		}
 		else if (sfFloatRect_intersects(&aBounds, &bBounds, NULL)) {
-				b->sx = 0.01;
-				a->sx = 0.0;
+				b->sx = a->sx;
+				a->sx = -1.0 * b->sx;
+//				a->sx = -0.01 * b->sx * a->radius;
+
+				b->sy = a->sy;
+				a->sy = -1.0 * b->sy;
+//				a->sy = -0.01 * b->sy * a->radius;
 		}
 
 //		printf("a: %.6f, b: %.6f\n", a->sx, b->sx);
 
 }
-int main()
-{
+
+int main() {
+	
 	sfVideoMode desk = sfVideoMode_getDesktopMode();
 	const unsigned int deskx = desk.size.x;
 	const unsigned int desky = desk.size.y;
@@ -106,17 +130,16 @@ int main()
 
 	Circle ball;
 //	initcircle(&ball, '0', (sfVector2f){W / 2.0, H / 2.0}, 15.0, (sfColor){255,12,123, 255});
-	initcircle(&ball, '0', (sfVector2f){W / 3.0, H / 2.0}, 15.0, (sfColor){255,12,123, 255});
+	initcircle(&ball, '0', (sfVector2f){W * 3.0 / 4.0, H / 2.0}, 15.0, (sfColor){255,12,123, 255});
 
 	Circle player1;
 	initcircle(&player1, '1', (sfVector2f){W / 3.0, H / 2.0}, 30.0, GREEN);
 	
 
 	sfEvent event;
-	while (sfRenderWindow_isOpen(window))
-	{
-		while (sfRenderWindow_pollEvent(window, &event))
-		{
+	while (sfRenderWindow_isOpen(window)) {	
+
+		while (sfRenderWindow_pollEvent(window, &event)) {
 			if (event.type == sfEvtClosed)
 				sfRenderWindow_close(window);
 			if (event.type == sfEvtKeyPressed) {
@@ -124,9 +147,12 @@ int main()
 					case (sfKeyEscape):
 						sfRenderWindow_close(window);
 						break;
-					case (sfKeyLControl && sfKeyC):
+					case (sfKeyQ):
 						sfRenderWindow_close(window);
 						break;
+					case (sfKeyLControl && sfKeyC):
+						sfRenderWindow_close(window);
+ 						break;
 					case (sfKeyH):
 						player1.sx -= 0.1;
 //						sfCircleShape_move(circles[0], (sfVector2f){-10.0, 0.0});
