@@ -5,7 +5,7 @@
 
 #define GRAY (sfColor){77, 77, 77, 255}
 #define GREEN (sfColor){55, 255, 155, 255}
-
+#define RED (sfColor){255,12,123, 255}
 #define N 1
 #define RADIUS 30.0
 
@@ -109,31 +109,29 @@ int main() {
 	const unsigned int deskx = desk.size.x;
 	const unsigned int desky = desk.size.y;
 
-
-	const unsigned int W = deskx / 2;
+	const unsigned int W = deskx / 3;
 	const unsigned int H = desky / 2;
 
-	sfRenderWindow* window = sfRenderWindow_create(
-			(const sfVideoMode){{W, H}, 32},
-			"SFML window",
-			sfNone,
-			sfWindowed,
-			NULL
-			);
-
+	sfRenderWindow* window = sfRenderWindow_create((const sfVideoMode){{W, H}, 32}, "SFML window", sfNone, sfWindowed, NULL);
 	if (!window)
 		return -1;
-
 
 	sfRenderWindow_setPosition(window, (sfVector2i){(deskx / 2) - (W / 2), (desky / 2) - (H / 2)});
 
 
-	Circle ball;
-//	initcircle(&ball, '0', (sfVector2f){W / 2.0, H / 2.0}, 15.0, (sfColor){255,12,123, 255});
-	initcircle(&ball, '0', (sfVector2f){W * 3.0 / 4.0, H / 2.0}, 15.0, (sfColor){255,12,123, 255});
+	Circle p0;
+	initcircle(&p0, '0', (sfVector2f){W * 1.0 / 4.0, H / 5.0}, 30.0, GREEN);
+	Circle p1;
+	initcircle(&p1, '1', (sfVector2f){W * 2.0 / 4.0, H / 4.0}, 30.0, GREEN);
+	Circle p2;
+	initcircle(&p2, '2', (sfVector2f){W * 3.0 / 4.0, H / 3.0}, 30.0, GREEN);
+	Circle p3;
+	initcircle(&p3, '3', (sfVector2f){W * 4.0 / 4.0, H / 2.0}, 30.0, GREEN);
+	Circle p4;
+	initcircle(&p4, '4', (sfVector2f){W * 3.5 / 4.0, H / 1.0}, 30.0, GREEN);
 
-	Circle player1;
-	initcircle(&player1, '1', (sfVector2f){W / 3.0, H / 2.0}, 30.0, GREEN);
+	Circle b0;
+	initcircle(&b0, '1', (sfVector2f){W / 3.0, H / 2.0}, 15.0, RED);
 	
 
 	sfEvent event;
@@ -154,20 +152,20 @@ int main() {
 						sfRenderWindow_close(window);
  						break;
 					case (sfKeyH):
-						player1.sx -= 0.1;
+						b0.sx -= 0.1;
 //						sfCircleShape_move(circles[0], (sfVector2f){-10.0, 0.0});
 						break;
 					case (sfKeyJ):
-						player1.sy += 0.1;
+						b0.sy += 0.1;
 //						sfCircleShape_move(circles[0], (sfVector2f){0.0, 10.0});
 						break;
 					case (sfKeyK):
-						player1.sy -= 0.1;
+						b0.sy -= 0.1;
 //						sfCircleShape_move(circles[0], (sfVector2f){0.0, -10.0});
 						break;
 					case (sfKeyL):
 //						sfCircleShape_move(circles[0], (sfVector2f){10.0, 0.0});
-						player1.sx += 0.1;
+						b0.sx += 0.1;
 						break;
 					default:
 						break;
@@ -177,29 +175,39 @@ int main() {
 
 		sfRenderWindow_clear(window, GRAY);
 
-//		for (int i = 0; i < N; i++)
-//			sfRenderWindow_drawCircleShape(window, circles[i], NULL);
+		sfRenderWindow_drawCircleShape(window, p0.circle, NULL);
+		sfRenderWindow_drawCircleShape(window, p1.circle, NULL);
+		sfRenderWindow_drawCircleShape(window, p2.circle, NULL);
+		sfRenderWindow_drawCircleShape(window, p3.circle, NULL);
+		sfRenderWindow_drawCircleShape(window, p4.circle, NULL);
+		sfRenderWindow_drawCircleShape(window, b0.circle, NULL);
 
-		sfRenderWindow_drawCircleShape(window, ball.circle, NULL);
-		sfRenderWindow_drawCircleShape(window, player1.circle, NULL);
-		movecircle(&player1, W, H);
-		movecircle(&ball, W, H);
 
-		movetowards(&player1, &ball);
+		movecircle(&b0, W, H);
+		movecircle(&p0, W, H);
+		movecircle(&p1, W, H);
+		movecircle(&p2, W, H);
+		movecircle(&p3, W, H);
+		movecircle(&p4, W, H);
+
+		movetowards(&b0, &p0);
+		movetowards(&b0, &p1);
+		movetowards(&b0, &p2);
+		movetowards(&b0, &p3);
+		movetowards(&b0, &p4);
 
 
 		sfRenderWindow_display(window);
 	}
 
 
-	//done
-//	for (int i = 0; i < N; i++)
-//		sfCircleShape_destroy(circles[i]);
-
-	sfCircleShape_destroy(ball.circle);
-	sfCircleShape_destroy(player1.circle);
+	sfCircleShape_destroy(p0.circle);
+	sfCircleShape_destroy(p1.circle);
+	sfCircleShape_destroy(p2.circle);
+	sfCircleShape_destroy(p3.circle);
+	sfCircleShape_destroy(p4.circle);
+	sfCircleShape_destroy(b0.circle);
 	sfRenderWindow_destroy(window);
-//	free(circles);
 
 	return 0;
 }
