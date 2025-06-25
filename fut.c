@@ -1,8 +1,8 @@
-#include <CSFML/Graphics.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
 #include <stdbool.h>
+#include <CSFML/Graphics.h>
 
 #define GRAY (sfColor){77, 77, 77, 255}
 #define GREEN (sfColor){55, 255, 155, 255}
@@ -130,12 +130,6 @@ int main() {
 	circles[2].selected = true;
 
 	Circle* active = &circles[2];
-	for (int i = 0; i < 11; i++) {
-					if (circles[i].selected == true) {
-									active = &circles[i];
-									circles[i].color = RED;
-					}
-	}
 
 //	Circle p0;
 //	initcircle(&p0, '0', (sfVector2f){W * 1.0 / 4.0, H / 5.0}, 30.0, GREEN);
@@ -170,6 +164,14 @@ int main() {
 					case (sfKeyLControl && sfKeyC):
 						sfRenderWindow_close(window);
  						break;
+					case (sfKeyTab):
+						int tmp = active->num;
+						circles[tmp].selected = false;
+						if (tmp == 10)
+										tmp = 0;
+						else 
+										tmp += 1;
+						circles[tmp].selected = true;
 					case (sfKeyH):
 						active->sx -= 0.1;
 //						sfCircleShape_move(circles[0], (sfVector2f){-10.0, 0.0});
@@ -201,6 +203,15 @@ int main() {
 //		sfRenderWindow_drawCircleShape(window, p4.circle, NULL);
 //		sfRenderWindow_drawCircleShape(window, b0.circle, NULL);
 
+	for (int i = 0; i < 11; i++) {
+					if (circles[i].selected == true) {
+									active = &circles[i];
+									sfCircleShape_setFillColor(circles[i].circle, RED);
+					}
+					else
+									sfCircleShape_setFillColor(circles[i].circle,GREEN);
+	}
+
 		for (int i = 0; i < 11; i++) {
 						sfRenderWindow_drawCircleShape(window, circles[i].circle, NULL);
 		}
@@ -213,7 +224,7 @@ int main() {
 //		movecircle(&p4, W, H);
 
 		for (int i = 0; i < 11; i++) {
-//						movecircle(circles[i], W, H);
+//						movecircle(&circles[i], W, H);
 		}
 
 // 		movetowards(&b0, &p0);
