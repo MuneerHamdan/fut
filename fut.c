@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
+#include <stdbool.h>
 
 #define GRAY (sfColor){77, 77, 77, 255}
 #define GREEN (sfColor){55, 255, 155, 255}
@@ -11,20 +12,23 @@
 
 
 typedef struct circle {
-	char num;
+	int num;
 	sfCircleShape* circle;
 	float radius;
 	sfColor color;
 
 	float sx;
 	float sy;
+
+	bool selected;
 } Circle;
 
-void initcircle(Circle* c, char num, sfVector2f pos, float radius, sfColor color) {
+void initcircle(Circle* c, int num, sfVector2f pos, float radius, sfColor color) {
 	c->num = num;
 	c->circle = sfCircleShape_create();
 	c->radius = radius;
 	c->color = color;
+	c->selected = false;
 	sfCircleShape_setRadius(c->circle, radius);
 	sfCircleShape_setOrigin(c->circle, (sfVector2f){radius, radius});
 	sfCircleShape_setPosition(c->circle, pos);
@@ -118,20 +122,35 @@ int main() {
 
 	sfRenderWindow_setPosition(window, (sfVector2i){(deskx / 2) - (W / 2), (desky / 2) - (H / 2)});
 
+	Circle circles[11];
 
-	Circle p0;
-	initcircle(&p0, '0', (sfVector2f){W * 1.0 / 4.0, H / 5.0}, 30.0, GREEN);
-	Circle p1;
-	initcircle(&p1, '1', (sfVector2f){W * 2.0 / 4.0, H / 4.0}, 30.0, GREEN);
-	Circle p2;
-	initcircle(&p2, '2', (sfVector2f){W * 3.0 / 4.0, H / 3.0}, 30.0, GREEN);
-	Circle p3;
-	initcircle(&p3, '3', (sfVector2f){W * 4.0 / 4.0, H / 2.0}, 30.0, GREEN);
-	Circle p4;
-	initcircle(&p4, '4', (sfVector2f){W * 3.5 / 4.0, H / 1.0}, 30.0, GREEN);
+	for (int i = 0; i < 11; i++) {
+					initcircle(&circles[i], i, (sfVector2f){W * i / 11, H * i / 11}, 30.0, GREEN);
+	}
+	circles[2].selected = true;
 
-	Circle b0;
-	initcircle(&b0, '1', (sfVector2f){W / 3.0, H / 2.0}, 15.0, RED);
+	Circle* active = &circles[2];
+	for (int i = 0; i < 11; i++) {
+					if (circles[i].selected == true) {
+									active = &circles[i];
+									circles[i].color = RED;
+					}
+	}
+
+//	Circle p0;
+//	initcircle(&p0, '0', (sfVector2f){W * 1.0 / 4.0, H / 5.0}, 30.0, GREEN);
+//	Circle p1;
+//	initcircle(&p1, '1', (sfVector2f){W * 2.0 / 4.0, H / 4.0}, 30.0, GREEN);
+//	Circle p2;
+//	initcircle(&p2, '2', (sfVector2f){W * 3.0 / 4.0, H / 3.0}, 30.0, GREEN);
+//	Circle p3;
+//	initcircle(&p3, '3', (sfVector2f){W * 4.0 / 4.0, H / 2.0}, 30.0, GREEN);
+//	Circle p4;
+//	initcircle(&p4, '4', (sfVector2f){W * 3.5 / 4.0, H / 1.0}, 30.0, GREEN);
+
+//	Circle b0;
+//	initcircle(&b0, '1', (sfVector2f){W / 3.0, H / 2.0}, 15.0, RED);
+
 	
 
 	sfEvent event;
@@ -152,20 +171,20 @@ int main() {
 						sfRenderWindow_close(window);
  						break;
 					case (sfKeyH):
-						b0.sx -= 0.1;
+						active->sx -= 0.1;
 //						sfCircleShape_move(circles[0], (sfVector2f){-10.0, 0.0});
 						break;
 					case (sfKeyJ):
-						b0.sy += 0.1;
+						active->sy += 0.1;
 //						sfCircleShape_move(circles[0], (sfVector2f){0.0, 10.0});
 						break;
 					case (sfKeyK):
-						b0.sy -= 0.1;
+						active->sy -= 0.1;
 //						sfCircleShape_move(circles[0], (sfVector2f){0.0, -10.0});
 						break;
 					case (sfKeyL):
 //						sfCircleShape_move(circles[0], (sfVector2f){10.0, 0.0});
-						b0.sx += 0.1;
+						active->sx += 0.1;
 						break;
 					default:
 						break;
@@ -175,38 +194,53 @@ int main() {
 
 		sfRenderWindow_clear(window, GRAY);
 
-		sfRenderWindow_drawCircleShape(window, p0.circle, NULL);
-		sfRenderWindow_drawCircleShape(window, p1.circle, NULL);
-		sfRenderWindow_drawCircleShape(window, p2.circle, NULL);
-		sfRenderWindow_drawCircleShape(window, p3.circle, NULL);
-		sfRenderWindow_drawCircleShape(window, p4.circle, NULL);
-		sfRenderWindow_drawCircleShape(window, b0.circle, NULL);
+//		sfRenderWindow_drawCircleShape(window, p0.circle, NULL);
+//		sfRenderWindow_drawCircleShape(window, p1.circle, NULL);
+//		sfRenderWindow_drawCircleShape(window, p2.circle, NULL);
+//		sfRenderWindow_drawCircleShape(window, p3.circle, NULL);
+//		sfRenderWindow_drawCircleShape(window, p4.circle, NULL);
+//		sfRenderWindow_drawCircleShape(window, b0.circle, NULL);
 
+		for (int i = 0; i < 11; i++) {
+						sfRenderWindow_drawCircleShape(window, circles[i].circle, NULL);
+		}
 
-		movecircle(&b0, W, H);
-		movecircle(&p0, W, H);
-		movecircle(&p1, W, H);
-		movecircle(&p2, W, H);
-		movecircle(&p3, W, H);
-		movecircle(&p4, W, H);
+//		movecircle(&b0, W, H);
+//		movecircle(&p0, W, H);
+//		movecircle(&p1, W, H);
+//		movecircle(&p2, W, H);
+//		movecircle(&p3, W, H);
+//		movecircle(&p4, W, H);
 
-		movetowards(&b0, &p0);
-		movetowards(&b0, &p1);
-		movetowards(&b0, &p2);
-		movetowards(&b0, &p3);
-		movetowards(&b0, &p4);
+		for (int i = 0; i < 11; i++) {
+//						movecircle(circles[i], W, H);
+		}
 
+// 		movetowards(&b0, &p0);
+// 		movetowards(&b0, &p1);
+// 		movetowards(&b0, &p2);
+// 		movetowards(&b0, &p3);
+// 		movetowards(&b0, &p4);
+
+		for (int i = 0; i < 11; i++) {
+//						movetowards(active, &b0);
+		}
 
 		sfRenderWindow_display(window);
 	}
 
 
-	sfCircleShape_destroy(p0.circle);
-	sfCircleShape_destroy(p1.circle);
-	sfCircleShape_destroy(p2.circle);
-	sfCircleShape_destroy(p3.circle);
-	sfCircleShape_destroy(p4.circle);
-	sfCircleShape_destroy(b0.circle);
+//	sfCircleShape_destroy(p0.circle);
+//	sfCircleShape_destroy(p1.circle);
+//	sfCircleShape_destroy(p2.circle);
+//	sfCircleShape_destroy(p3.circle);
+//	sfCircleShape_destroy(p4.circle);
+//	sfCircleShape_destroy(b0.circle);
+
+	for (int i = 0; i < 11; i++) {
+					sfCircleShape_destroy(circles[i].circle);
+	}
+
 	sfRenderWindow_destroy(window);
 
 	return 0;
