@@ -110,9 +110,6 @@ void movetowards(Circle* a, Circle* b) {
 
 }
 
-void detectontop(Circle* a, Circle* b) {
-
-
 int main() {
 
   sfVideoMode desk = sfVideoMode_getDesktopMode();
